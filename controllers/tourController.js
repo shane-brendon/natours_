@@ -12,7 +12,22 @@ const Tour = require("../models/tourModal");
 
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    const queryObj = { ...req.query };
+    const excludeFields = ["page", "sort", "limit", "fields"];
+
+    excludeFields.forEach((el) => delete queryObj[el]);
+
+    let queryStr = JSON.stringify(req.query);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    let query = Tour.find(JSON.parse(queryStr)).sort(req.query.sort);
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      query = query.sort(sortBy);
+    }
+    const tours = await query;
+
     res.status(200).json({
       status: "success",
       results: tours.length,
@@ -79,7 +94,6 @@ exports.updateTour = async (req, res) => {
     });
   }
 };
-
 exports.deleteTour = async (req, res) => {
   try {
     await Tour.findByIdAndDelete(req.params.id);
