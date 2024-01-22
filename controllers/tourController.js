@@ -17,15 +17,16 @@ exports.getAllTours = async (req, res) => {
 
     excludeFields.forEach((el) => delete queryObj[el]);
 
-    let queryStr = JSON.stringify(req.query);
+    let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    let query = Tour.find(JSON.parse(queryStr)).sort(req.query.sort);
+    let query = Tour.find(JSON.parse(queryStr));
 
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
       query = query.sort(sortBy);
     }
+
     const tours = await query;
 
     res.status(200).json({
