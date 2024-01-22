@@ -24,4 +24,4 @@ app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
 
-// mongoose.set('debug', true)
+mongoose.set('debug', true)
