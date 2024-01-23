@@ -10,6 +10,13 @@ const Tour = require("../models/tourModal");
 //   next();
 // };
 
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = '5'
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingAverage,summary,difficulty';
+  next()
+}
+
 exports.getAllTours = async (req, res) => {
   try {
     const queryObj = { ...req.query };
@@ -29,13 +36,24 @@ exports.getAllTours = async (req, res) => {
       query.sort("-createAt");
     }
 
-    if(req.query.fields) {
+    if (req.query.fields) {
       const fields = req.query.fields.split(",").join(" ");
       query.select(fields);
     } else {
-      query.select('-__v')
+      query.select("-__v");
     }
 
+    //paginaiton
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 1;
+    const skip = (page - 1) * limit;
+
+    query.skip(skip).limit(limit);
+
+    if(req.query.page) {
+      const numTours = await Tour.countDocuments()
+      if(skip >= numTours) throw new Error("this page does not exist")
+    }
     const tours = await query;
 
     res.status(200).json({
