@@ -4,8 +4,9 @@
   "description": "Learning node, Express and mongoDB",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "build": "NODE_ENV=prodution nodemon server.js"
+    "dev": "nodemon server.js",
+    "build": "NODE_ENV=production nodemon server.js",
+    "debug": "nodemon  --inspect server.js"
   },
   "author": "shane ramah-naik",
   "license": "ISC",
