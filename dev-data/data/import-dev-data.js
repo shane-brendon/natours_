@@ -1,14 +1,14 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const fs = require("fs");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const Tour = require("../../models/tourModal");
+const fs = require("fs")
+const mongoose = require("mongoose")
+const dotenv = require("dotenv")
+const Tour = require("../../models/tourModal")
 
-dotenv.config({ path: "./config.env" });
+dotenv.config({ path: "./config.env" })
 const DB = process.env.DATABASE.replace(
   "<PASSWORD>",
-  process.env.DATABASE_PASSWORD,
-);
+  process.env.DATABASE_PASSWORD
+)
 
 mongoose
   .connect(DB, {
@@ -16,37 +16,37 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then(() => console.log("DB connection successful"));
+  .then(() => console.log("DB connection successful"))
 
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, "utf-8"),
-);
+  fs.readFileSync(`${__dirname}/tours-simple.json`, "utf-8")
+)
 
 //import all data
 const importData = async () => {
   try {
-    await Tour.create(tours);
-    console.log("successfully created");
+    await Tour.create(tours)
+    console.log("successfully created")
   } catch (err) {
-    console.log(err);
+    console.log(err)
   }
-  process.exit();
-};
+  process.exit()
+}
 
 //Delete all data
 const deleteData = async () => {
   try {
-    await Tour.deleteMany();
-    console.log("successfully delete");
+    await Tour.deleteMany()
+    console.log("successfully delete")
   } catch (err) {
-    console.log(err);
+    console.log(err)
   }
 
-  process.exit();
-};
+  process.exit()
+}
 
 if (process.argv[2] === "--import") {
-  importData();
+  importData()
 } else if (process.argv[2] === "--delete") {
-  deleteData();
+  deleteData()
 }
