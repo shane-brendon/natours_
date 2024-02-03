@@ -105,7 +105,6 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
       },
     },
     { $match: { _id: { $ne: "EAZY" } } },
-    dv,
   ]);
 
   res.status(200).json({
