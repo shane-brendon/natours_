@@ -12,11 +12,15 @@ if (process.env.NODE_ENV === "development") {
 }
 app.use(express.json())
 
+app.use((req, res, next) => {
+  next()
+})
+
 app.use("/api/v1/tours", tourRouter)
 app.use("/api/v1/users", userRouter)
 
 app.all("*", (req, res, next) => {
-  console.log(new AppError("this", 404))
+  console.log(new AppError("error", 404))
   next()
 })
 

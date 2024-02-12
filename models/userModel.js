@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const validator = require("validator")
 const bcrypt = require("bcryptjs")
 
-const userShema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "name is required"],
@@ -32,20 +32,38 @@ const userShema = new mongoose.Schema({
       message: "password are not the same",
     },
   },
+  passwordChangedAt: Date,
 })
-userShema.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next()
   this.password = await bcrypt.hash(this.password, 12)
   this.passwordConfirm = undefined
   next()
 })
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew) return next()
 
-userShema.methods.correctPassword = async function (
+  this.passwordChangedAt = Date.now() - 1000
+  next()
+})
+userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPasseword
 ) {
   return await bcrypt.compare(candidatePassword, userPasseword)
 }
-const User = mongoose.model("User", userShema)
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    )
+
+    return JWTTimestamp < changedTimestamp
+  }
+}
+
+const User = mongoose.model("User", userSchema)
 
 module.exports = User
