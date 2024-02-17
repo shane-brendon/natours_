@@ -19,10 +19,10 @@ app.use((req, res, next) => {
 app.use("/api/v1/tours", tourRouter)
 app.use("/api/v1/users", userRouter)
 
-app.all("*", (req, res, next) => {
-  console.log(new AppError("error", 404))
-  next()
-})
+// app.all("*", (req, res, next) => {
+//   console.log(new AppError("error", 404))
+//   next()
+// })
 
 app.use(globalErrorHandler)
 
