@@ -11,8 +11,19 @@ const signToken = (id, name) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   })
 }
+
 const createAndSendToken = (user, statusCode, res) => {
   const token = signToken(user._id)
+  res.cookie("jwt", token, {
+    expires: new Date(
+      Date.now() + process.env.JWT_EXPIRES_IN.slice(0, -1) * 24 * 60 * 60 * 1000
+    ),
+    secure: process.env.NODE_ENV === "production" ? true : false,
+    httpOnly: true,
+  })
+
+  user.password = undefined
+
   res.status(statusCode).json({
     status: "sucess",
     token,
