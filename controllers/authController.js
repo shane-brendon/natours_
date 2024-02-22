@@ -25,7 +25,7 @@ const createAndSendToken = (user, statusCode, res) => {
   user.password = undefined
 
   res.status(statusCode).json({
-    status: "sucess",
+    status: "success",
     token,
     data: {
       user,
@@ -122,7 +122,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       message,
     })
     res.status(200).json({
-      status: "sucess",
+      status: "success",
       message: "Token send",
     })
   } catch (err) {
