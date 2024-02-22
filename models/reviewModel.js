@@ -29,6 +29,21 @@ const reviewSchema = new mongoose.Schema(
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 )
 
+//QUERY MIDDLEWARE
+reviewSchema.pre(/^find/, function (next) {
+  // this.populate({
+  //   path: "tour",
+  //   select: "-__v",
+  // }).populate({
+  //   path: "user",
+  //   select: "-__v -passwordChangedAt",
+  // })
+  this.populate({
+    path: "user",
+    select: "-__v -passwordChangedAt",
+  })
+  next()
+})
 const Review = mongoose.model("Review", reviewSchema)
 
 module.exports = Review

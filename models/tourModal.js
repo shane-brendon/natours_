@@ -109,11 +109,15 @@ const tourSchema = new mongoose.Schema(
 
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 )
-
+//VIRTUAL POPULATION OF MODEL
 tourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7
 })
-
+tourSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "tour",
+  localField: "_id",
+})
 // Document MIDDLEWARE: runs before .save() and .create()
 tourSchema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true })
