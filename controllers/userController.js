@@ -10,19 +10,19 @@ const filterObj = (obj, ...allowedFields) => {
   })
   return newObj
 }
-
-exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find()
-
+exports.getCurrentUser = (req, res, next) => {
   res.status(200).json({
     status: "success",
-    results: users.length,
-    data: {
-      users,
-    },
+    data: { user: req.user },
   })
-})
+}
 
+exports.createUser = (req, res) => {
+  res.status(500).json({
+    status: "error",
+    message: "access denied, use /signup instead",
+  })
+}
 exports.updateUserProfile = catchAsync(async (req, res, next) => {
   const defaultUnauthorizedFields = [
     "password",
@@ -62,22 +62,7 @@ exports.deleteUserProfile = catchAsync(async (req, res, next) => {
   })
 })
 
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "this route is not yer defined",
-  })
-}
-exports.createUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "this route is not yer defined",
-  })
-}
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "this route is not yer defined",
-  })
-}
+exports.getAllUsers = factoryHandler.getAll(User)
+exports.getUser = factoryHandler.getOne(User)
+exports.updateUser = factoryHandler.updateOne(User)
 exports.deleteUser = factoryHandler.deleteOne(User)

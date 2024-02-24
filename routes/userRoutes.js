@@ -25,7 +25,7 @@ router.delete(
   authController.protect,
   userController.deleteUserProfile
 )
-
+router.get("/me", authController.protect, userController.getCurrentUser)
 router
   .route("/")
   .get(userController.getAllUsers)

@@ -12,5 +12,10 @@ router
     authController.restrictTo("user"),
     reviewController.CreateReview
   )
-router.route("/:id").delete(reviewController.deleteReview)
+router
+  .route("/:id")
+  .get(reviewController.getReview)
+  .patch(reviewController.updateReview)
+  .delete(reviewController.setTourAndUserId, reviewController.deleteReview)
+
 module.exports = router
