@@ -10,7 +10,11 @@ router.use(authController.protect)
 router
   .route("/")
   .get(reviewController.getAllReviews)
-  .post(authController.restrictTo("user"), reviewController.CreateReview)
+  .post(
+    authController.restrictTo("user"),
+    reviewController.setTourAndUserId,
+    reviewController.CreateReview
+  )
 router
   .route("/:id")
   .get(reviewController.getReview)
