@@ -1,5 +1,5 @@
-const Review = require("../models/reviewModel")
-const factoryHandler = require("./factoryHandlers")
+const Review = require('../models/reviewModel')
+const factoryHandler = require('./factoryHandlers')
 // const AppError = require("../utils/appError")
 // const catchAsync = require("../utils/catchAsync")
 

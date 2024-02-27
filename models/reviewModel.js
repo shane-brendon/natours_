@@ -1,11 +1,11 @@
-const mongoose = require("mongoose")
-const Tour = require("./tourModal")
+const mongoose = require('mongoose')
+const Tour = require('./tourModal')
 
 const reviewSchema = new mongoose.Schema(
   {
     review: {
       type: String,
-      require: [true, "Comment required"],
+      require: [true, 'Comment required'],
     },
     rating: {
       type: Number,
@@ -18,13 +18,13 @@ const reviewSchema = new mongoose.Schema(
     },
     tour: {
       type: mongoose.Schema.ObjectId,
-      ref: "Tour",
-      required: [true, "Review need to be asigne to a tour"],
+      ref: 'Tour',
+      required: [true, 'Review need to be asigne to a tour'],
     },
     user: {
       type: mongoose.Schema.ObjectId,
-      ref: "User",
-      required: [true, "Review need to be asigne to a user"],
+      ref: 'User',
+      required: [true, 'Review need to be asigne to a user'],
     },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
@@ -35,8 +35,8 @@ reviewSchema.index({ tour: 1, user: 1 }, { unique: true })
 //QUERY MIDDLEWARE
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
-    path: "user",
-    select: "-__v -passwordChangedAt",
+    path: 'user',
+    select: '-__v -passwordChangedAt',
   })
   // this.populate({
   //   path: "tour",
@@ -55,9 +55,9 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     },
     {
       $group: {
-        _id: "$tour",
+        _id: '$tour',
         nRating: { $sum: 1 },
-        avgRating: { $avg: "rating" },
+        avgRating: { $avg: 'rating' },
       },
     },
   ])
@@ -68,7 +68,7 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
   })
 }
 
-reviewSchema.post("save", function () {
+reviewSchema.post('save', function () {
   this.constructor.calcAverageRatings(this.tour)
 })
 
@@ -77,6 +77,6 @@ reviewSchema.post(/^findOneAnd/, async function (doc) {
     await doc.constructor.calcAverageRatings(doc.tour)
   }
 })
-const Review = mongoose.model("Review", reviewSchema)
+const Review = mongoose.model('Review', reviewSchema)
 
 module.exports = Review
