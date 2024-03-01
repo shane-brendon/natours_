@@ -14,8 +14,8 @@ const helmet = require('helmet')
 const globalErrorHandler = require('./controllers/errorController')
 
 const app = express()
-app.set('view engine', 'pug')
-app.set('views', path.join(__dirname, 'views'))
+// app.set('view engine', 'pug')
+// app.set('views', path.join(__dirname, 'views'))
 
 //SERVING STATIC PATH
 app.use('/',express.static(path.join(__dirname, 'public')))
@@ -53,9 +53,9 @@ app.use(
   })
 )
 // Routes
-app.get('/', (req, res, next) =>
-  res.status(200).render('base', { tour: 'the forest hiker', user: 'shane' })
-)
+// app.get('/', (req, res, next) =>
+//   res.status(200).render('base', { tour: 'the forest hiker', user: 'shane' })
+// )
 
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
