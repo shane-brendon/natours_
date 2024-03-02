@@ -32,7 +32,6 @@ const createAndSendToken = (user, statusCode, res) => {
     },
   })
 }
-
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -62,7 +61,39 @@ exports.login = catchAsync(async (req, res, next) => {
   }
   createAndSendToken(user, 200, res)
 })
+exports.isLoggedIn = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      )
+      const currentUser = await User.findById(decoded.id)
 
+      if (!currentUser) {
+        return next()
+      }
+      if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return next()
+      }
+      // PASSING DATA TO TEMPLATE: PUG TEMPLATE HAS ACCESS TO req.locals
+      res.locals.user = currentUser
+      return next()
+    } catch {
+      return next()
+    }
+  }
+  next()
+}
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  })
+  res.status(200).json({
+    status: 'sucess',
+  })
+}
 exports.protect = catchAsync(async (req, res, next) => {
   let token
 
@@ -71,6 +102,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1]
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt
   }
   if (!token) {
     return next(new appError('You are not logged in', 401))
@@ -91,7 +124,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser
   next()
 })
-
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
@@ -100,7 +132,6 @@ exports.restrictTo = (...roles) => {
     next()
   }
 }
-
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email })
 
@@ -156,7 +187,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save()
   createAndSendToken(user, 200, res)
 })
-
 exports.updatePassword = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user.id).select('+password')
 
