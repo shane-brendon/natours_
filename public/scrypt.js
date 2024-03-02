@@ -1,19 +1,21 @@
 // browser
 document.querySelector('.form').addEventListener('submit', (e) => {
   e.preventDefault()
-  const email = document.getElementById('email').value
-  const password = document.getElementById('password').value
-
-  login(email, password)
+  const form = new FormData()
+  form.append('email', document.getElementById('email').value)
+  form.append('password', document.getElementById('password').value)
+  form.append('photo', document.getElementById('profilePicture').file)
+  console.log(document.getElementById('profilePicture').file)
+  login(form)
 })
-const login = async (email, password) => {
+const login = async (form) => {
+  console.log(form)
   try {
     const res = await axios({
       method: 'POST',
       url: 'http://localhost:3000/api/v1/users/login',
       data: {
-        email,
-        password,
+        form
       },
     })
     if ((res.data.status = 'success')) console.log('Profile update successful')
