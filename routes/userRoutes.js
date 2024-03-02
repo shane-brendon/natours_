@@ -17,6 +17,7 @@ router.patch('/changePassword', authController.updatePassword)
 router.patch(
   '/updateUser',
   userController.uploadUserPhoto,
+  userController.resizeUserPhoto,
   userController.updateUserProfile
 )
 router.delete('/deleteUser', userController.deleteUserProfile)
