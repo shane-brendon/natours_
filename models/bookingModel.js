@@ -17,20 +17,19 @@ const bookingShema = new moongoose.Schema({
   },
   createAt: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   paid: {
     type: Boolean,
-    default: true
-  }
-
+    default: true,
+  },
 })
 
-bookingShema.pre(/^find/, function(next) {
-    this.populate('user').populate({
-        path: 'tour',
-        Select: 'name'
-    })
+bookingShema.pre(/^find/, function (next) {
+  this.populate('user').populate({
+    path: 'tour',
+    Select: 'name',
+  })
 })
 const Booking = mongoose.model('Booking', bookingShema)
 

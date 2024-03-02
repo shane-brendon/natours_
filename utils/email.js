@@ -2,13 +2,13 @@ const nodemailer = require('nodemailer')
 module.exports = class Email {
   contructor(user, url) {
     this.to = user.email
-    this.firstname = user.name.split(" ")[0]
+    this.firstname = user.name.split(' ')[0]
     this.url = url
-    this.from =  `Brendon Shane <${process.env.EMAIL_FROM}>`
+    this.from = `Brendon Shane <${process.env.EMAIL_FROM}>`
   }
 
   newTransport() {
-    if(process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production') {
       return 1
     }
     nodemailer.createTransport({
@@ -22,7 +22,7 @@ module.exports = class Email {
   }
 
   async send(template, subject) {
-    const html =  `<div> this is an email </div>`
+    const html = `<div> this is an email </div>`
     const mailOptions = {
       from: this.from,
       to: this.to,
@@ -34,7 +34,7 @@ module.exports = class Email {
 
     await this.newTransportawait.sendMail(mailOptions)
   }
-  
+
   async sendWelcome() {
     await this.send('welcome', 'welcome to the natours family')
   }
@@ -43,4 +43,3 @@ module.exports = class Email {
     await this.send('password reset', 'your password reset token')
   }
 }
-
